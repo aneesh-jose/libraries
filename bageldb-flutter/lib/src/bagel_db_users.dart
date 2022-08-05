@@ -264,15 +264,19 @@ class BagelUsersRequest {
 
     String url = '$authEndpoint/user/token';
     String? refreshToken = await _getRefreshToken();
-    String body =
-        'grant_type=refresh_token&refresh_token=$refreshToken&client_id=project-client';
+    FormData formData = FormData.fromMap({
+      "grant_type": "refresh_token",
+      "refresh_token": refreshToken,
+      "client_id": "project-client"
+    });
+
     try {
       Options options = Options(headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer ${instance.token}',
         // "Accept-Version": "v1"
       });
-      Response res = await dio.post(url, data: body, options: options);
+      Response res = await dio.post(url, data: formData, options: options);
       if (res.statusCode == 200) {
         _storeTokens(res.data);
       }
